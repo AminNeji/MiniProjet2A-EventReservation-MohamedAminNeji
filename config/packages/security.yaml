@@ -17,7 +17,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # Admin firewall (session-based)
+        # Admin firewall
         admin:
             pattern: ^/admin
             lazy: true
@@ -32,14 +32,14 @@ security:
                 path: admin_logout
                 target: admin_login
 
-        # API firewall (JWT stateless)
+        # API firewall
         api:
             pattern: ^/api
             stateless: true
             provider: app_user_provider
             jwt: ~
 
-        # Main firewall (session-based for users)
+        # session-based for users
         main:
             lazy: true
             provider: app_user_provider
@@ -59,13 +59,12 @@ security:
     access_control:
         # Public API auth routes
         - { path: ^/api/auth/(register|login|passkey), roles: PUBLIC_ACCESS }
-        # Protected API routes
         - { path: ^/api, roles: ROLE_USER }
-        # Admin setup (only in dev — remove in prod)
+        # Admin setup
         - { path: ^/admin/setup, roles: PUBLIC_ACCESS }
-        # Admin login public
+        # Admin login
         - { path: ^/admin/login, roles: PUBLIC_ACCESS }
-        # All other admin routes require ROLE_ADMIN
+        # All other admin routes require ADMIN ROLE
         - { path: ^/admin, roles: ROLE_ADMIN }
         # Public routes
         - { path: ^/login, roles: PUBLIC_ACCESS }
