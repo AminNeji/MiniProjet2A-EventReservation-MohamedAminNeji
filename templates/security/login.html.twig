@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+{% block title %}Connexion{% endblock %}
+{% block body_class %}page-auth{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">◈</div>
+            <h1>Connexion</h1>
+            <p>Accédez à votre espace personnel</p>
+        </div>
+
+        {% if error %}
+            <div class="alert alert-error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <!-- Classic login -->
+        <form method="post" id="login-form">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" value="{{ last_username }}"
+                       autocomplete="username" required placeholder="Votre identifiant">
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password"
+                       autocomplete="current-password" required placeholder="••••••••">
+            </div>
+            <div class="form-check">
+                <input type="checkbox" id="remember_me" name="_remember_me">
+                <label for="remember_me">Se souvenir de moi</label>
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <button type="submit" class="btn-primary btn-full">Se connecter</button>
+        </form>
+
+        <div class="auth-divider"><span>ou</span></div>
+
+        <!-- Passkey login -->
+        <button id="passkey-login-btn" class="btn-passkey btn-full" type="button">
+            🔑 Se connecter avec une Passkey
+        </button>
+        <div id="passkey-status" class="passkey-msg" style="display:none;"></div>
+
+        <div class="auth-footer">
+            <p>Pas encore de compte ? <a href="{{ path('app_register') }}">S'inscrire</a></p>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+<script>
+document.getElementById('passkey-login-btn')?.addEventListener('click', async () => {
+    const statusEl = document.getElementById('passkey-status');
+    statusEl.style.display = 'block';
+    statusEl.className = 'passkey-msg info';
+    statusEl.textContent = 'Activation de la Passkey…';
+    try {
+        const result = await loginWithPasskey();
+        if (result.token) {
+            localStorage.setItem('jwt_token', result.token);
+            statusEl.className = 'passkey-msg success';
+            statusEl.textContent = '✅ Authentifié ! Redirection…';
+            setTimeout(() => window.location.href = '/events/', 800);
+        }
+    } catch (e) {
+        statusEl.className = 'passkey-msg error';
+        statusEl.textContent = '❌ ' + (e.message || 'Erreur Passkey');
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}
