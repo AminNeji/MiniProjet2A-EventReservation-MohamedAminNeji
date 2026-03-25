@@ -1,0 +1,68 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: event_php
+    environment:
+      - APP_ENV=dev
+      - APP_DEBUG=1
+      - JWT_PASSPHRASE=${JWT_PASSPHRASE:-dev_passphrase}
+      - APP_DOMAIN=${APP_DOMAIN:-localhost}
+      - DATABASE_URL=postgresql://app:secret@db:5432/app?serverVersion=15&charset=utf8
+    volumes:
+      - .:/var/www
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: event_nginx
+    ports:
+      - "8082:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php
+    networks:
+      - app_network
+
+  db:
+    image: postgres:15-alpine
+    container_name: event_db
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+   
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
+  database_data:
