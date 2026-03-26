@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EventReservation{% endblock %} — ISSAT Sousse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<nav class="navbar">
+    <a href="{{ path('app_home') }}" class="navbar-brand">
+        <span class="brand-icon">◈</span> EventRes
+    </a>
+    <div class="navbar-links">
+        <a href="{{ path('app_event_index') }}">Événements</a>
+        {% if app.user %}
+            <span class="nav-user">👤 {{ app.user.useridentifier }}</span>
+            <a href="{{ path('app_logout') }}" class="btn-nav-outline">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('app_login') }}">Connexion</a>
+            <a href="{{ path('app_register') }}" class="btn-nav">S'inscrire</a>
+        {% endif %}
+    </div>
+</nav>
+
+<main class="main-content">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash flash-{{ label }}">{{ message }}</div>
+        {% endfor %}
+    {% endfor %}
+    {% block body %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <span>© 2026 EventReservation — ISSAT Sousse · Amin Neji - ING A2</span>
+        <div class="footer-links">
+            <a href="{{ path('app_event_index') }}">Événements</a>
+            <a href="{{ path('app_login') }}">Connexion</a>
+        </div>
+    </div>
+</footer>
+
+<script src="{{ asset('js/auth.js') }}"></script>
+{% block javascripts %}{% endblock %}
+</body>
+</html>
