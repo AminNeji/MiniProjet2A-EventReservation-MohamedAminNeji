@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+{% block body_class %}page-home{% endblock %}
+
+{% block body %}
+<section class="hero">
+    <div class="hero-content">
+        <p class="hero-eyebrow">ISSAT Sousse · Amin Neji - ING A2</p>
+        <h1 class="hero-title">Réservez vos<br><em>événements</em></h1>
+        <p class="hero-sub">Découvrez et réservez des places pour les meilleurs événements. Simple, rapide et sécurisé.</p>
+        <div class="hero-actions">
+            <a href="{{ path('app_event_index') }}" class="btn-primary">Voir les événements</a>
+            {% if not app.user %}
+                <a href="{{ path('app_register') }}" class="btn-secondary">Créer un compte</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hero-visual">
+        <div class="hero-card">
+            <div class="hc-badge">Prochain événement</div>
+            {% if events|length > 0 %}
+                <div class="hc-title">{{ events[0].title }}</div>
+                <div class="hc-meta">📅 {{ events[0].date|date('d M Y') }}</div>
+                <div class="hc-meta">📍 {{ events[0].location }}</div>
+                <div class="hc-seats">{{ events[0].availableSeats }} places restantes</div>
+            {% else %}
+                <div class="hc-title">Aucun événement</div>
+                <div class="hc-meta">Revenez bientôt !</div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="section-events">
+    <div class="section-header">
+        <h2>Événements à venir</h2>
+        <a href="{{ path('app_event_index') }}" class="link-all">Tous les événements →</a>
+    </div>
+
+    {% if events|length > 0 %}
+    <div class="events-grid">
+        {% for event in events %}
+        <article class="event-card">
+            <div class="event-card-img">
+                {% if event.image %}
+                    <img src="{{ asset('uploads/events/' ~ event.image) }}" alt="{{ event.title }}">
+                {% else %}
+                    <div class="event-img-placeholder">◈</div>
+                {% endif %}
+                {% if event.isFull %}
+                    <span class="badge-full">Complet</span>
+                {% else %}
+                    <span class="badge-open">{{ event.availableSeats }} places</span>
+                {% endif %}
+            </div>
+            <div class="event-card-body">
+                <div class="event-date">{{ event.date|date('d M Y · H:i') }}</div>
+                <h3 class="event-title">{{ event.title }}</h3>
+                <p class="event-location">📍 {{ event.location }}</p>
+                <a href="{{ path('app_event_show', {id: event.id}) }}" class="btn-card">Voir détails</a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🗓️</div>
+        <p>Aucun événement disponible pour le moment.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

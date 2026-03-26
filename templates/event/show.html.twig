@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block body %}
+<div class="event-detail">
+    <div class="event-detail-img">
+        {% if event.image %}
+            <img src="{{ asset('uploads/events/' ~ event.image) }}" alt="{{ event.title }}">
+        {% else %}
+            <div class="event-img-placeholder-lg">◈</div>
+        {% endif %}
+    </div>
+
+    <div class="event-detail-content">
+        <a href="{{ path('app_event_index') }}" class="back-link">← Retour aux événements</a>
+        <div class="event-meta-row">
+            <span class="event-date-chip">{{ event.date|date('d M Y · H:i') }}</span>
+            {% if event.isFull %}
+                <span class="badge-full">Complet</span>
+            {% else %}
+                <span class="badge-open">{{ event.availableSeats }} / {{ event.seats }} places disponibles</span>
+            {% endif %}
+        </div>
+
+        <h1>{{ event.title }}</h1>
+        <p class="event-location-line">📍 {{ event.location }}</p>
+        <div class="event-description">{{ event.description|nl2br }}</div>
+
+        <div class="event-stats">
+            <div class="stat">
+                <span class="stat-num">{{ event.seats }}</span>
+                <span class="stat-lbl">Places totales</span>
+            </div>
+            <div class="stat">
+                <span class="stat-num">{{ event.reservations|length }}</span>
+                <span class="stat-lbl">Réservations</span>
+            </div>
+            <div class="stat">
+                <span class="stat-num">{{ event.availableSeats }}</span>
+                <span class="stat-lbl">Restantes</span>
+            </div>
+        </div>
+
+        {% if not event.isFull %}
+            <a href="{{ path('app_event_reserve', {id: event.id}) }}" class="btn-primary btn-lg">
+                Réserver ma place →
+            </a>
+        {% else %}
+            <div class="full-notice">Cet événement est complet.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

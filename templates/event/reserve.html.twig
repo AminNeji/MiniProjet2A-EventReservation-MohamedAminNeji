@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+{% block title %}Réserver — {{ event.title }}{% endblock %}
+
+{% block body %}
+<div class="form-page">
+    <div class="form-card">
+        <a href="{{ path('app_event_show', {id: event.id}) }}" class="back-link">← {{ event.title }}</a>
+        <h1>Réserver une place</h1>
+        <p class="form-subtitle">📅 {{ event.date|date('d M Y · H:i') }} — 📍 {{ event.location }}</p>
+
+        {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" class="reservation-form">
+            <div class="form-group">
+                <label for="name">Nom complet *</label>
+                <input type="text" id="name" name="name" required placeholder="ex: Ahmed Ben Ali"
+                       value="{{ app.request.request.get('name', '') }}">
+            </div>
+            <div class="form-group">
+                <label for="email">Adresse email *</label>
+                <input type="email" id="email" name="email" required placeholder="ex: ahmed@mail.com"
+                       value="{{ app.request.request.get('email', app.user ? app.user.email : '') }}">
+            </div>
+            <div class="form-group">
+                <label for="phone">Téléphone *</label>
+                <input type="tel" id="phone" name="phone" required placeholder="ex: +216 XX XXX XXX"
+                       value="{{ app.request.request.get('phone', '') }}">
+            </div>
+
+            <div class="seats-info">
+                <span>{{ event.availableSeats }} place(s) disponible(s) sur {{ event.seats }}</span>
+            </div>
+
+            <button type="submit" class="btn-primary btn-full">Confirmer la réservation</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
