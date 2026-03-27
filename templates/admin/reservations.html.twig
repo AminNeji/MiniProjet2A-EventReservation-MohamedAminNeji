@@ -1,0 +1,40 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}Réservations — {{ event.title }}{% endblock %}
+{% block page_title %}Réservations : {{ event.title }}{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ path('admin_events') }}" class="btn-admin-outline">← Événements</a>
+{% endblock %}
+
+{% block body %}
+<div class="event-info-bar">
+    📅 {{ event.date|date('d/m/Y H:i') }} &nbsp;·&nbsp; 📍 {{ event.location }}
+    &nbsp;·&nbsp; <strong>{{ reservations|length }} / {{ event.seats }} réservations</strong>
+</div>
+
+<table class="admin-table">
+    <thead>
+        <tr><th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Date réservation</th><th>Statut</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+    {% for r in reservations %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td><strong>{{ r.name }}</strong></td>
+            <td>{{ r.email }}</td>
+            <td>{{ r.phone }}</td>
+            <td>{{ r.createdAt|date('d/m/Y H:i') }}</td>
+            <td><span class="status-badge status-{{ r.status }}">{{ r.status }}</span></td>
+            <td>
+                <form method="post" action="{{ path('admin_reservation_delete', {id: r.id}) }}" style="display:inline"
+                      onsubmit="return confirm('Supprimer cette réservation ?')">
+                    <button type="submit" class="btn-sm btn-red">🗑️</button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="7" class="empty-row">Aucune réservation pour cet événement.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

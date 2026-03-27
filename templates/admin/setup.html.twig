@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin · Configuration initiale</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+</head>
+<body class="admin-login-body">
+<div class="admin-login-wrap">
+    <div class="admin-login-card">
+        <div class="admin-login-logo">◈</div>
+        {% if created %}
+            <h1>Compte admin créé</h1>
+            <p>Connectez-vous puis supprimez la route <code>/admin/setup</code> en production.</p>
+            <div style="text-align:left;font-size:0.9rem;padding:.75rem 1rem;background:rgba(80,140,100,.12);border-radius:8px;margin-bottom:1.2rem;border:1px solid rgba(80,140,100,.25);">
+                <strong>Identifiant :</strong> admin<br>
+                <strong>Mot de passe :</strong> Admin@1234
+            </div>
+            <a href="{{ path('admin_login') }}" class="btn-primary btn-full" style="display:inline-block;text-align:center;text-decoration:none;">Aller à la connexion</a>
+        {% else %}
+            <h1>Setup déjà effectué</h1>
+            <p>Un administrateur existe déjà en base. Utilisez la page de connexion.</p>
+            <a href="{{ path('admin_login') }}" class="btn-primary btn-full" style="display:inline-block;text-align:center;text-decoration:none;">Connexion admin</a>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

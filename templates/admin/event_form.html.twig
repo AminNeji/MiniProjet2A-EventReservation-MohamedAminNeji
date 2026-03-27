@@ -1,0 +1,60 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}{{ action == 'create' ? 'Nouvel événement' : 'Modifier' }}{% endblock %}
+{% block page_title %}{{ action == 'create' ? 'Créer un événement' : 'Modifier : ' ~ event.title }}{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ path('admin_events') }}" class="btn-admin-outline">← Retour</a>
+{% endblock %}
+
+{% block body %}
+<div class="form-card-admin">
+    {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="admin-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Titre *</label>
+                <input type="text" name="title" required value="{{ event ? event.title : '' }}" placeholder="Titre de l'événement">
+            </div>
+            <div class="form-group">
+                <label>Lieu *</label>
+                <input type="text" name="location" required value="{{ event ? event.location : '' }}" placeholder="Adresse ou salle">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Date et heure *</label>
+                <input type="datetime-local" name="date" required
+                       value="{{ event ? event.date|date('Y-m-d\\TH:i') : '' }}">
+            </div>
+            <div class="form-group">
+                <label>Nombre de places *</label>
+                <input type="number" name="seats" required min="1" value="{{ event ? event.seats : '' }}" placeholder="ex: 100">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Description *</label>
+            <textarea name="description" required rows="5" placeholder="Décrivez l'événement…">{{ event ? event.description : '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Image (JPEG/PNG)</label>
+            {% if event and event.image %}
+                <div class="current-image">
+                    <img src="{{ asset('uploads/events/' ~ event.image) }}" alt="Image actuelle" style="height:80px;border-radius:8px;">
+                    <span>Image actuelle — en uploader une nouvelle la remplacera</span>
+                </div>
+            {% endif %}
+            <input type="file" name="image" accept="image/jpeg,image/png,image/webp">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-admin-primary">
+                {{ action == 'create' ? '✅ Créer l\'événement' : '💾 Enregistrer les modifications' }}
+            </button>
+            <a href="{{ path('admin_events') }}" class="btn-admin-outline">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}Événements{% endblock %}
+{% block page_title %}Gestion des événements{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ path('admin_event_new') }}" class="btn-admin-primary">+ Nouvel événement</a>
+{% endblock %}
+
+{% block body %}
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>Image</th><th>Titre</th><th>Date</th><th>Lieu</th><th>Places</th><th>Réservations</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for event in events %}
+        <tr>
+            <td>
+                {% if event.image %}
+                    <img src="{{ asset('uploads/events/' ~ event.image) }}" class="table-thumb">
+                {% else %}
+                    <div class="table-thumb-placeholder">◈</div>
+                {% endif %}
+            </td>
+            <td><strong>{{ event.title }}</strong></td>
+            <td>{{ event.date|date('d/m/Y H:i') }}</td>
+            <td>{{ event.location }}</td>
+            <td>{{ event.seats }}</td>
+            <td>
+                <span class="{{ event.isFull ? 'badge-full' : 'badge-open' }}">
+                    {{ event.reservations|length }} / {{ event.seats }}
+                </span>
+            </td>
+            <td class="action-btns">
+                <a href="{{ path('admin_event_reservations', {id: event.id}) }}" class="btn-sm btn-blue">📋</a>
+                <a href="{{ path('admin_event_edit', {id: event.id}) }}" class="btn-sm btn-orange">✏️</a>
+                <form method="post" action="{{ path('admin_event_delete', {id: event.id}) }}" style="display:inline"
+                      onsubmit="return confirm('Supprimer cet événement ?')">
+                    <button type="submit" class="btn-sm btn-red">🗑️</button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="7" class="empty-row">Aucun événement. <a href="{{ path('admin_event_new') }}">Créer le premier</a></td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
