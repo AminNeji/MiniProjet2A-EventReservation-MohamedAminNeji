@@ -1,0 +1,26 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}Toutes les réservations{% endblock %}
+{% block page_title %}Toutes les réservations{% endblock %}
+
+{% block body %}
+<table class="admin-table">
+    <thead>
+        <tr><th>#</th><th>Événement</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Date</th><th>Statut</th></tr>
+    </thead>
+    <tbody>
+    {% for r in reservations %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td><a href="{{ path('admin_event_reservations', {id: r.event.id}) }}">{{ r.event.title }}</a></td>
+            <td><strong>{{ r.name }}</strong></td>
+            <td>{{ r.email }}</td>
+            <td>{{ r.phone }}</td>
+            <td>{{ r.createdAt|date('d/m/Y H:i') }}</td>
+            <td><span class="status-badge status-{{ r.status }}">{{ r.status }}</span></td>
+        </tr>
+    {% else %}
+        <tr><td colspan="7" class="empty-row">Aucune réservation.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

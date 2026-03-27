@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — {% block title %}Dashboard{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+</head>
+<body class="admin-body">
+
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <span class="brand-mark">◈</span>
+        <span>Admin Panel</span>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="{{ path('admin_dashboard') }}" class="{{ app.request.get('_route') == 'admin_dashboard' ? 'active' : '' }}">
+            📊 Dashboard
+        </a>
+        <a href="{{ path('admin_events') }}" class="{{ app.request.get('_route') starts with 'admin_event' ? 'active' : '' }}">
+            🗓️ Événements
+        </a>
+        <a href="{{ path('admin_reservations') }}" class="{{ app.request.get('_route') == 'admin_reservations' ? 'active' : '' }}">
+            📋 Réservations
+        </a>
+    </nav>
+    <div class="sidebar-bottom">
+        <span class="admin-badge">👤 {{ app.user ? app.user.useridentifier : 'Admin' }}</span>
+        <a href="{{ path('admin_logout') }}" class="sidebar-logout">Déconnexion</a>
+    </div>
+</aside>
+
+<div class="admin-main">
+    <header class="admin-topbar">
+        <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+        <div class="topbar-actions">{% block topbar_actions %}{% endblock %}</div>
+    </header>
+
+    <div class="admin-content">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ label }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+        {% block body %}{% endblock %}
+    </div>
+</div>
+
+</body>
+</html>
